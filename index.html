@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhotoShare</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#fafafa;
+}
+
+header{
+    background:#fff;
+    border-bottom:1px solid #ddd;
+    padding:15px 20px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+nav a{
+    text-decoration:none;
+    color:#333;
+    margin-left:20px;
+}
+
+.container{
+    max-width:600px;
+    margin:20px auto;
+}
+
+.stories{
+    background:#fff;
+    border:1px solid #ddd;
+    padding:15px;
+    display:flex;
+    overflow-x:auto;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.story{
+    text-align:center;
+}
+
+.story img{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    border:3px solid #ff4d6d;
+}
+
+.create-post{
+    background:#fff;
+    border:1px solid #ddd;
+    padding:15px;
+    margin-bottom:20px;
+}
+
+.create-post input{
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+}
+
+.create-post button{
+    padding:10px 15px;
+    background:#0095f6;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+.post{
+    background:#fff;
+    border:1px solid #ddd;
+    margin-bottom:20px;
+}
+
+.post-header{
+    padding:15px;
+    font-weight:bold;
+}
+
+.post img{
+    width:100%;
+}
+
+.post-actions{
+    padding:15px;
+}
+
+.like-btn{
+    cursor:pointer;
+    border:none;
+    background:none;
+    font-size:20px;
+}
+
+.comment-box{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+}
+
+.likes{
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.comments{
+    margin-top:10px;
+}
+
+.comment{
+    margin-top:5px;
+}
+
+@media(max-width:600px){
+    .container{
+        width:100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">PhotoShare</div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Profile</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <div class="stories">
+        <div class="story">
+            <img src="https://picsum.photos/100?1">
+            <p>User1</p>
+        </div>
+
+        <div class="story">
+            <img src="https://picsum.photos/100?2">
+            <p>User2</p>
+        </div>
+
+        <div class="story">
+            <img src="https://picsum.photos/100?3">
+            <p>User3</p>
+        </div>
+
+        <div class="story">
+            <img src="https://picsum.photos/100?4">
+            <p>User4</p>
+        </div>
+    </div>
+
+    <div class="create-post">
+        <h3>Create Post</h3>
+        <input type="text" id="username" placeholder="Your Name">
+        <input type="text" id="imageUrl" placeholder="Image URL">
+        <button onclick="createPost()">Post</button>
+    </div>
+
+    <div id="feed">
+
+        <div class="post">
+            <div class="post-header">john_doe</div>
+
+            <img src="https://picsum.photos/600/500">
+
+            <div class="post-actions">
+                <button class="like-btn" onclick="likePost(this)">
+                    ❤️
+                </button>
+
+                <div class="likes">0 Likes</div>
+
+                <input
+                    class="comment-box"
+                    placeholder="Add a comment..."
+                    onkeypress="addComment(event,this)"
+                >
+
+                <div class="comments"></div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function likePost(button){
+
+    let likesDiv =
+      button.parentElement.querySelector(".likes");
+
+    let count =
+      parseInt(likesDiv.innerText);
+
+    count++;
+
+    likesDiv.innerText =
+      count + " Likes";
+}
+
+function addComment(event,input){
+
+    if(event.key === "Enter"){
+
+        let comments =
+          input.parentElement.querySelector(".comments");
+
+        let div =
+          document.createElement("div");
+
+        div.className = "comment";
+
+        div.textContent =
+          input.value;
+
+        comments.appendChild(div);
+
+        input.value = "";
+    }
+}
+
+function createPost(){
+
+    let user =
+      document.getElementById("username").value;
+
+    let image =
+      document.getElementById("imageUrl").value;
+
+    if(!user || !image){
+        alert("Fill all fields");
+        return;
+    }
+
+    let feed =
+      document.getElementById("feed");
+
+    let post =
+    `
+    <div class="post">
+
+        <div class="post-header">
+            ${user}
+        </div>
+
+        <img src="${image}">
+
+        <div class="post-actions">
+
+            <button
+                class="like-btn"
+                onclick="likePost(this)">
+                ❤️
+            </button>
+
+            <div class="likes">
+                0 Likes
+            </div>
+
+            <input
+                class="comment-box"
+                placeholder="Add a comment..."
+                onkeypress="addComment(event,this)"
+            >
+
+            <div class="comments"></div>
+
+        </div>
+
+    </div>
+    `;
+
+    feed.insertAdjacentHTML(
+      "afterbegin",
+      post
+    );
+
+    document.getElementById(
+      "username"
+    ).value="";
+
+    document.getElementById(
+      "imageUrl"
+    ).value="";
+}
+
+</script>
+
+</body>
+</html>
